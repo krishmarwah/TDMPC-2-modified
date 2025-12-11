@@ -1,0 +1,110 @@
+defaults:
+  - override hydra/launcher: submitit_local
+
+# ENVIRONMENT
+task: lidar_nav
+task_title: lidar_nav
+obs: state
+episodic: true
+
+obs_shape: { state: [122] }
+action_dim: 2
+episode_length: 300
+
+# EVALUATION
+eval_episodes: 3
+eval_freq: 500
+checkpoint: null
+
+# TRAINING
+steps: 600000
+seed_steps: 1000
+batch_size: 256
+buffer_size: 300000
+rho: 0.5
+
+# Reward scaling
+reward_coef: 1.0
+termination_coef: 1.0
+consistency_coef: 2.0
+value_coef: 0.5
+
+# learning
+lr: 3e-4
+enc_lr_scale: 0.3
+grad_clip_norm: 20
+tau: 0.01
+
+# discount control
+discount_denom: 5
+discount_min: 0.95
+discount_max: 0.99
+
+exp_name: lidar_nav_tdmpc2
+data_dir: ./data
+
+# PLANNING (MPC)
+mpc: true
+iterations: 4
+num_samples: 256
+num_elites: 32
+num_pi_trajs: 24
+horizon: 12
+min_std: 0.05
+max_std: 1.5
+temperature: 0.5
+
+# ACTOR
+log_std_min: -10
+log_std_max: 2
+entropy_coef: 1e-4
+
+# CRITIC (Discrete regression bins)
+num_bins: 101
+vmin: -30
+vmax: 40
+
+# ARCHITECTURE
+model_size: 1
+num_enc_layers: 2
+enc_dim: 256
+num_channels: 32
+mlp_dim: 512
+latent_dim: 512
+task_dim: 96
+num_q: 5
+dropout: 0.01
+simnorm_dim: 8
+
+# LOGGING
+wandb_project: LIDAR-TDMPC2
+wandb_entity: your_user_here
+wandb_silent: true
+enable_wandb: false
+save_csv: true
+save_video: true
+save_agent: true
+
+# MISC
+compile: false
+device: cuda
+seed: 1
+cuda_id: 1
+
+# PATHS
+work_dir: ./logs/lidar_tdmpc2
+
+multitask: false
+tasks: null
+obs_shapes: null
+action_dims: null
+episode_lengths: null
+seed_steps_per_task: null
+bin_size: null
+
+wandb:
+  entity: your_user_here
+  project: LIDAR-TDMPC2
+  group: null
+  name: null
+  mode: offline
